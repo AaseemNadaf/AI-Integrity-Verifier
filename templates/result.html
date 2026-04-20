@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result - AI Model Integrity</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; }
+        .result-card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 40px; max-width: 700px; width: 100%; text-align: center; }
+        .icon { font-size: 4rem; margin-bottom: 16px; }
+        .status-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 12px; }
+        .verified .status-title { color: #3fb950; }
+        .tampered .status-title { color: #f85149; }
+        .registered .status-title { color: #58a6ff; }
+        .error .status-title { color: #8b949e; }
+        .message { font-size: 1rem; color: #8b949e; margin-bottom: 28px; padding: 12px 20px; border-radius: 8px; }
+        .verified .message { background: #0f2a1a; color: #3fb950; }
+        .tampered .message { background: #2a0f0f; color: #f85149; }
+        .registered .message { background: #0c1a2e; color: #58a6ff; }
+        .error .message { background: #1c1c1c; }
+        .details { text-align: left; margin-top: 20px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #21262d; font-size: 0.85rem; gap: 12px; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { color: #8b949e; min-width: 140px; flex-shrink: 0; }
+        .detail-value { color: #e6edf3; word-break: break-all; font-family: monospace; font-size: 0.8rem; }
+        .hash-match { color: #3fb950; }
+        .hash-mismatch { color: #f85149; }
+        .back-btn { display: inline-block; margin-top: 28px; padding: 12px 28px; background: #21262d; border: 1px solid #30363d; border-radius: 8px; color: #e6edf3; text-decoration: none; font-size: 0.9rem; transition: background 0.2s; }
+        .back-btn:hover { background: #30363d; }
+    </style>
+</head>
+<body>
+    <div class="result-card {{ status }}">
+        {% if status == "verified" %}
+            <div class="icon">✅</div>
+            <div class="status-title">Model Verified</div>
+        {% elif status == "tampered" %}
+            <div class="icon">⚠️</div>
+            <div class="status-title">Tampering Detected!</div>
+        {% elif status == "registered" %}
+            <div class="icon">🔐</div>
+            <div class="status-title">Model Registered</div>
+        {% else %}
+            <div class="icon">❌</div>
+            <div class="status-title">Error</div>
+        {% endif %}
+
+        <div class="message">{{ message }}</div>
+
+        <div class="details">
+            {% if model_name %}
+            <div class="detail-row">
+                <span class="detail-label">Model Name</span>
+                <span class="detail-value">{{ model_name }}</span>
+            </div>
+            {% endif %}
+            {% if model_hash %}
+            <div class="detail-row">
+                <span class="detail-label">Registered Hash</span>
+                <span class="detail-value">{{ model_hash }}</span>
+            </div>
+            {% endif %}
+            {% if current_hash %}
+            <div class="detail-row">
+                <span class="detail-label">Current Hash</span>
+                <span class="detail-value {{ 'hash-match' if status == 'verified' else 'hash-mismatch' }}">{{ current_hash }}</span>
+            </div>
+            {% endif %}
+            {% if stored_hash %}
+            <div class="detail-row">
+                <span class="detail-label">Blockchain Hash</span>
+                <span class="detail-value {{ 'hash-match' if status == 'verified' else 'hash-mismatch' }}">{{ stored_hash }}</span>
+            </div>
+            {% endif %}
+            {% if tx_hash %}
+            <div class="detail-row">
+                <span class="detail-label">Transaction Hash</span>
+                <span class="detail-value">{{ tx_hash }}</span>
+            </div>
+            {% endif %}
+            {% if registered_by %}
+            <div class="detail-row">
+                <span class="detail-label">Registered By</span>
+                <span class="detail-value">{{ registered_by }}</span>
+            </div>
+            {% endif %}
+            {% if registered_time %}
+            <div class="detail-row">
+                <span class="detail-label">Registered At</span>
+                <span class="detail-value">{{ registered_time }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <a href="/" class="back-btn">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

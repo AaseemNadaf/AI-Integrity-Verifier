@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Version History - {{ model_name }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: #58a6ff; font-size: 1.6rem; margin-bottom: 6px; }
+        p.subtitle { color: #8b949e; margin-bottom: 30px; font-size: 0.9rem; }
+        .version-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 24px; margin-bottom: 16px; position: relative; }
+        .version-badge { position: absolute; top: 20px; right: 20px; background: #1f6feb; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .latest-badge { background: #238636; }
+        .version-card h3 { color: #e6edf3; font-size: 1rem; margin-bottom: 16px; }
+        .detail-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid #21262d; font-size: 0.85rem; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { color: #8b949e; min-width: 130px; flex-shrink: 0; }
+        .detail-value { color: #e6edf3; word-break: break-all; font-family: monospace; font-size: 0.8rem; }
+        .empty { text-align: center; color: #8b949e; padding: 60px 0; }
+        .back-btn { display: inline-block; margin-bottom: 24px; padding: 10px 20px; background: #21262d; border: 1px solid #30363d; border-radius: 8px; color: #e6edf3; text-decoration: none; font-size: 0.85rem; }
+        .back-btn:hover { background: #30363d; }
+        .count-badge { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px 20px; margin-bottom: 24px; font-size: 0.9rem; color: #8b949e; }
+        .count-badge span { color: #58a6ff; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-btn">← Back to Dashboard</a>
+
+        <h1>📋 Version History</h1>
+        <p class="subtitle">All registered versions of model: <strong>{{ model_name }}</strong></p>
+
+        {% if versions %}
+        <div class="count-badge">
+            Total Versions Registered: <span>{{ versions|length }}</span>
+        </div>
+
+        {% for v in versions|reverse %}
+        <div class="version-card">
+            <span class="version-badge {{ 'latest-badge' if loop.first else '' }}">
+                {{ 'Latest' if loop.first else 'v' + v.version|string }}
+            </span>
+            <h3>Version {{ v.version }}</h3>
+            <div class="detail-row">
+                <span class="detail-label">Model Hash</span>
+                <span class="detail-value">{{ v.hash }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Registered By</span>
+                <span class="detail-value">{{ v.registered_by }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Registered At</span>
+                <span class="detail-value">{{ v.timestamp }}</span>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <div class="empty">
+            <p>No versions found for this model.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

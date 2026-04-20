@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Integrity Verification</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+        header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 30px; text-align: center; border-bottom: 1px solid #30363d; }
+        header h1 { font-size: 2rem; color: #58a6ff; }
+        header p { color: #8b949e; margin-top: 8px; }
+        .status-bar { text-align: center; padding: 10px; font-size: 0.85rem; }
+        .status-bar.connected { background: #0f2a1a; color: #3fb950; }
+        .status-bar.disconnected { background: #2a0f0f; color: #f85149; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 28px; }
+        .card h2 { font-size: 1.2rem; margin-bottom: 6px; }
+        .card.register h2 { color: #58a6ff; }
+        .card.verify h2 { color: #3fb950; }
+        .card p.desc { color: #8b949e; font-size: 0.85rem; margin-bottom: 20px; }
+        label { display: block; font-size: 0.85rem; color: #8b949e; margin-bottom: 6px; margin-top: 14px; }
+        input[type="text"], input[type="file"] { width: 100%; padding: 10px 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; color: #e6edf3; font-size: 0.9rem; }
+        input[type="text"]:focus { outline: none; border-color: #58a6ff; }
+        button { width: 100%; margin-top: 20px; padding: 12px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+        button:hover { opacity: 0.85; }
+        .card.register button { background: #1f6feb; color: white; }
+        .card.verify button { background: #238636; color: white; }
+        .info-section { max-width: 1000px; margin: 0 auto 40px; padding: 0 20px; }
+        .info-box { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 24px; }
+        .info-box h3 { color: #58a6ff; margin-bottom: 12px; }
+        .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px; }
+        .step { background: #0d1117; border-radius: 8px; padding: 12px; text-align: center; font-size: 0.8rem; color: #8b949e; }
+        .step span { display: block; font-size: 1.5rem; margin-bottom: 6px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔐 AI Model Integrity Verification</h1>
+        <p>Secure AI Model Authentication using Blockchain & SHA-256 Cryptography</p>
+    </header>
+
+    <div class="status-bar {{ 'connected' if connected else 'disconnected' }}">
+        {{ '✅ Blockchain Connected (Ganache)' if connected else '❌ Blockchain Disconnected — Start Ganache on port 8545' }}
+    </div>
+
+    <div class="container">
+        <div class="card register">
+            <h2>📝 Register Model</h2>
+            <p class="desc">Train your model, then register its cryptographic fingerprint on the blockchain.</p>
+            <form action="/register" method="POST" enctype="multipart/form-data">
+                <label>Model Name (unique identifier)</label>
+                <input type="text" name="model_name" placeholder="e.g. iris_classifier_v1" required>
+                <label>Model File (.pkl or .h5)</label>
+                <input type="file" name="model_file" accept=".pkl,.h5,.joblib" required>
+                <button type="submit">Register on Blockchain</button>
+            </form>
+        </div>
+
+        <div class="card verify">
+            <h2>🔍 Verify Model</h2>
+            <p class="desc">Upload a model to check if it matches the hash stored on the blockchain.</p>
+            <form action="/verify" method="POST" enctype="multipart/form-data">
+                <label>Model Name (must match registered name)</label>
+                <input type="text" name="model_name" placeholder="e.g. iris_classifier_v1" required>
+                <label>Model File to Verify</label>
+                <input type="file" name="model_file" accept=".pkl,.h5,.joblib" required>
+                <button type="submit">Verify Integrity</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <div class="info-box">
+            <h3>How It Works</h3>
+            <div class="steps">
+                <div class="step"><span>🤖</span>Train AI Model with scikit-learn</div>
+                <div class="step"><span>#️⃣</span>Generate SHA-256 hash of model file</div>
+                <div class="step"><span>⛓️</span>Store hash permanently on Ethereum blockchain</div>
+                <div class="step"><span>✅</span>Verify by comparing hashes at any time</div>
+            </div>
+            <div style="text-align:center; margin-top: 20px;">
+    <a href="/verify-hash" style="display:inline-block; padding: 10px 24px; background: #21262d; border: 1px solid #30363d; border-radius: 8px; color: #e6edf3; text-decoration: none; font-size: 0.85rem;">
+        #️⃣ Verify by Hash (No Upload)
+    </a>
+    <a href="/history/iris_v1" style="display:inline-block; margin-left: 12px; padding: 10px 24px; background: #21262d; border: 1px solid #30363d; border-radius: 8px; color: #e6edf3; text-decoration: none; font-size: 0.85rem;">
+        📋 View Version History
+    </a>
+</div>
+        </div>
+    </div>
+</body>
+</html>

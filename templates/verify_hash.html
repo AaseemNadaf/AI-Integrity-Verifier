@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Hash - AI Model Integrity</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; }
+        .container { max-width: 600px; width: 100%; }
+        h1 { color: #58a6ff; font-size: 1.6rem; margin-bottom: 6px; }
+        p.subtitle { color: #8b949e; margin-bottom: 30px; font-size: 0.9rem; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 32px; }
+        label { display: block; font-size: 0.85rem; color: #8b949e; margin-bottom: 6px; margin-top: 20px; }
+        label:first-of-type { margin-top: 0; }
+        input[type="text"], textarea { width: 100%; padding: 10px 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; color: #e6edf3; font-size: 0.9rem; font-family: monospace; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: #58a6ff; }
+        textarea { resize: vertical; min-height: 80px; }
+        button { width: 100%; margin-top: 24px; padding: 12px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; background: #1f6feb; color: white; transition: opacity 0.2s; }
+        button:hover { opacity: 0.85; }
+        .error { background: #2a0f0f; color: #f85149; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; }
+        .info-box { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 16px; margin-top: 24px; font-size: 0.8rem; color: #8b949e; }
+        .info-box p { margin-bottom: 6px; }
+        .info-box p:last-child { margin-bottom: 0; }
+        .info-box span { color: #58a6ff; font-family: monospace; }
+        .back-btn { display: inline-block; margin-bottom: 24px; padding: 10px 20px; background: #21262d; border: 1px solid #30363d; border-radius: 8px; color: #e6edf3; text-decoration: none; font-size: 0.85rem; }
+        .back-btn:hover { background: #30363d; }
+        .char-count { text-align: right; font-size: 0.75rem; color: #8b949e; margin-top: 4px; }
+        .char-count.valid { color: #3fb950; }
+        .char-count.invalid { color: #f85149; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-btn">← Back to Dashboard</a>
+
+        <h1>#️⃣ Verify by Hash</h1>
+        <p class="subtitle">Paste a SHA-256 hash directly to verify without uploading the model file.</p>
+
+        <div class="card">
+            {% if error %}
+            <div class="error">❌ {{ error }}</div>
+            {% endif %}
+
+            <form action="/verify-hash" method="POST">
+                <label>Model Name</label>
+                <input type="text" name="model_name" placeholder="e.g. iris_v1" required>
+
+                <label>SHA-256 Hash</label>
+                <textarea name="model_hash" id="hashInput" placeholder="Paste your 64-character SHA-256 hash here..." required></textarea>
+                <div class="char-count" id="charCount">0 / 64 characters</div>
+
+                <button type="submit">Verify Hash on Blockchain</button>
+            </form>
+
+            <div class="info-box">
+                <p>How to get your model hash:</p>
+                <p>Run this in your terminal inside the backend folder:</p>
+                <p><span>python hash_utils.py</span></p>
+                <p>Copy the printed SHA-256 hash and paste it above.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const hashInput = document.getElementById("hashInput");
+        const charCount = document.getElementById("charCount");
+
+        hashInput.addEventListener("input", function() {
+            const len = this.value.trim().length;
+            charCount.textContent = len + " / 64 characters";
+            charCount.className = "char-count";
+            if (len === 64) {
+                charCount.classList.add("valid");
+            } else if (len > 0) {
+                charCount.classList.add("invalid");
+            }
+        });
+    </script>
+</body>
+</html>
